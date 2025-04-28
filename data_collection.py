@@ -11,7 +11,7 @@ detector = HandDetector(maxHands=1)
 offset = 20
 imgSize = 300
 
-dataDir = os.path.join("Data","A")
+dataDir = os.path.join("data","B")
 count = 0
 
 while True:
