@@ -4,6 +4,7 @@ import cv2
 
 class TFLiteClassifier:
     def __init__(self, model_path, labels_path):
+        # Load the model
         self.interpreter = tf.lite.Interpreter(model_path=model_path)
         self.interpreter.allocate_tensors()
 
@@ -16,6 +17,8 @@ class TFLiteClassifier:
 
     def predict(self, image):
         input_shape = self.input_details[0]['shape'][1:3]
+
+        # Resize the image
         image_resized = cv2.resize(image, tuple(input_shape))
         image_normalized = image_resized.astype(np.float32) / 255.0
         input_data = np.expand_dims(image_normalized, axis=0)
@@ -26,6 +29,7 @@ class TFLiteClassifier:
         output = self.interpreter.get_tensor(self.output_details[0]['index'])[0]
         prediction = np.argmax(output)
         confidence = output[prediction]
+
         return self.labels[prediction], confidence
 
 cap = cv2.VideoCapture(0)
@@ -37,6 +41,8 @@ while True:
         break
 
     label, confidence = classifier.predict(frame)
+
+    # Add prediction to frame
     cv2.putText(frame, f'{label} ({confidence:.2f})', (20, 40),
                 cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
